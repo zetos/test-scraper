@@ -1,0 +1,26 @@
+{
+  "name": "test-scraper",
+  "version": "1.0.0",
+  "description": "A scraper built for a test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zetos/test-scraper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zetos/test-scraper/issues"
+  },
+  "homepage": "https://github.com/zetos/test-scraper#readme",
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.18.2"
+  }
+}
