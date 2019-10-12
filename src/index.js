@@ -1,6 +1,8 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { parseTable } = require('@joshuaavalon/cheerio-table-parser');
 const querystring = require('querystring');
+
 const { isNumber, getDate, extractParams, fixSpace } = require('./format');
 
 const getUrlData = async url => {
@@ -137,6 +139,17 @@ const findEmenta = (html, $) => {
   return ementaFound;
 };
 
+const getProcedure = (html, $) => {
+  const table = parseTable(html);
+
+  // - Trâmite do Projeto (Projeto, Entrada, Prazo, Devolução)
+  console.log('procedure:', table[0]);
+  console.log('procedure:', table[1]);
+  console.log('procedure:', table[2]);
+
+  return table;
+};
+
 const getProjectInfo = async url => {
   const body = await getUrlData(url);
   const $ = loadHtml(body);
@@ -164,13 +177,14 @@ const getProjectInfo = async url => {
   const subject = $(Object.values(row)[2]).text();
   const author = getAuthor($(Object.values(row)[4]), $);
   const ementa = findEmenta($(divCard), $);
+  const procedure = getProcedure($(divCard).find('table.table'), $);
 
-  console.log('date:', date);
-  console.log('title:', projectTitle);
-  console.log('situation:', situation);
-  console.log('subject:', subject);
-  console.log('author:', author);
-  console.log('ementa:', ementa);
+  // console.log('date:', date);
+  // console.log('title:', projectTitle);
+  // console.log('situation:', situation);
+  // console.log('subject:', subject);
+  // console.log('author:', author);
+  // console.log('ementa:', ementa);
   console.log('=-=-=-=-=-=-=-=-=-=-=-=-= \n');
 };
 
