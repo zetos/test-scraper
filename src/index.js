@@ -2,8 +2,11 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const { parseTable } = require('@joshuaavalon/cheerio-table-parser');
 const querystring = require('querystring');
+require('dotenv').config();
 
 const { isNumber, getDate, extractParams, fixSpace } = require('./format');
+
+// const uri = process.env.MONGO_URI;
 
 const getUrlData = async url => {
   const { data } = await axios({
@@ -140,7 +143,7 @@ const findEmenta = (html, $) => {
 };
 
 // TODO: clean strings & check cases where name value is: 'Emenda' || 'Emenda : 1'
-const getProcedure = (html, $) => {
+const getProcedure = html => {
   const table = parseTable(html.first());
   table.shift(); // remove th elements
 
