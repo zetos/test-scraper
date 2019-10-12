@@ -6,7 +6,22 @@ require('dotenv').config();
 
 const { isNumber, getDate, extractParams, fixSpace } = require('./format');
 
-// const uri = process.env.MONGO_URI;
+const uri = process.env.MONGO_URI;
+
+const mongoConnect = uri => {
+  mongoose
+    .connect(uri, {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useUnifiedTopology: true
+    })
+    .catch(error => console.error('Mongoose connect error:', error.message));
+
+  const connection = mongoose.connection;
+  connection.once('open', () => {
+    console.log('MongoDB database connection established successfully');
+  });
+};
 
 const getUrlData = async url => {
   const { data } = await axios({
