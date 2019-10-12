@@ -139,15 +139,24 @@ const findEmenta = (html, $) => {
   return ementaFound;
 };
 
+// TODO: clean strings & check cases where name value is: 'Emenda' || 'Emenda : 1'
 const getProcedure = (html, $) => {
-  const table = parseTable(html);
+  const table = parseTable(html.first());
+  table.shift(); // remove th elements
 
-  // - Trâmite do Projeto (Projeto, Entrada, Prazo, Devolução)
-  console.log('procedure:', table[0]);
-  console.log('procedure:', table[1]);
-  console.log('procedure:', table[2]);
+  const projecObj = table.reduce((acc, current, index) => {
+    acc[index] = {
+      name: [current[0]][0],
+      entry: [current[1]][0],
+      deadline: [current[2]][0],
+      devolution: [current[3]][0]
+    };
 
-  return table;
+    return acc;
+  }, {});
+  // console.log('projecObj:', projecObj);
+
+  return projecObj;
 };
 
 const getProjectInfo = async url => {
@@ -185,6 +194,7 @@ const getProjectInfo = async url => {
   // console.log('subject:', subject);
   // console.log('author:', author);
   // console.log('ementa:', ementa);
+  console.log('procedure:', procedure);
   console.log('=-=-=-=-=-=-=-=-=-=-=-=-= \n');
 };
 
