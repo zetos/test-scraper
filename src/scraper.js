@@ -3,7 +3,13 @@ const cheerio = require('cheerio');
 const { parseTable } = require('@joshuaavalon/cheerio-table-parser');
 const querystring = require('querystring');
 
-const { isNumber, getDate, extractParams, fixSpace } = require('./format');
+const {
+  isNumber,
+  getDate,
+  checkIfDate,
+  extractParams,
+  fixSpace
+} = require('./format');
 
 const getUrlData = async url => {
   const { data } = await axios({
@@ -110,7 +116,15 @@ const getProjectInfo = async url => {
 
   // console.log('procedure:', procedure);
   // console.log('=-=-=-=-=-=-=-=-=-=-=-=-= \n');
-  return {};
+  return {
+    title: projectTitle,
+    date,
+    situation,
+    subject,
+    author,
+    ementa,
+    procedure
+  };
 };
 
 const getAuthor = (html, $) => {
@@ -154,24 +168,26 @@ const getProcedure = html => {
   table.shift(); // remove th elements
 
   const projecObj = table.reduce((acc, current, index) => {
-    acc[index] = {
-      name: [current[0]][0],
-      entry: [current[1]][0],
-      deadline: [current[2]][0],
-      devolution: [current[3]][0]
-    };
+    if (checkIfDate([current[1]][0])) {
+      acc[index] = {
+        name: [current[0]][0],
+        entry: [current[1]][0],
+        deadline: fixSpace([current[2]][0]),
+        devolution: fixSpace([current[3]][0])
+      };
+    }
 
     return acc;
   }, {});
-  // console.log('projecObj:', projecObj);
 
+  // console.log('prodecure:', projecObj);
   return projecObj;
 };
 
 const searchForKeyWord = async keyword => {
   const body = await postUrlData(keyword);
   const $ = loadHtml(body);
-
+  let foundProjects = [];
   const divCard = $('div.card');
 
   Object.keys(divCard).forEach(key => {
@@ -190,10 +206,11 @@ const searchForKeyWord = async keyword => {
       const projectInfo = getProjectInfo(
         `http://www.legislador.com.br/${WinProjetoTXT(...linkParams)}`
       );
+      foundProjects.push(projectInfo);
     }
   });
+
+  return await Promise.all(foundProjects);
 };
 
-// searchForKeyWord('transporte');
-
-module.exports.searchForKeyWord = searchForKeyWord;
+module.exports = { searchForKeyWord };
