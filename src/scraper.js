@@ -92,8 +92,6 @@ const getProjectInfo = async url => {
     .first()
     .text();
 
-  // console.log('projectTitle:', projectTitle);
-
   const date = getDate(
     $(divCard)
       .find('h6.card-subtitle')
@@ -107,15 +105,6 @@ const getProjectInfo = async url => {
   const ementa = findEmenta($(divCard), $);
   const procedure = getProcedure($(divCard).find('table.table'), $);
 
-  // console.log('date:', date);
-  // console.log('title:', projectTitle);
-  // console.log('situation:', situation);
-  // console.log('subject:', subject);
-  // console.log('author:', author);
-  // console.log('ementa:', ementa);
-
-  // console.log('procedure:', procedure);
-  // console.log('=-=-=-=-=-=-=-=-=-=-=-=-= \n');
   return {
     title: projectTitle,
     date,
@@ -139,14 +128,14 @@ const getAuthor = (html, $) => {
 };
 
 const findEmenta = (html, $) => {
-  const test = $(html)
+  const ementas = $(html)
     .find('div.card-header')
     .children('h5.card-title');
 
   let ementaFound;
 
-  Object.keys(test).forEach(key => {
-    const currentTitle = $(test[key]);
+  Object.keys(ementas).forEach(key => {
+    const currentTitle = $(ementas[key]);
     if (currentTitle.text() === 'Ementa') {
       const ementa = currentTitle
         .parent()
@@ -162,7 +151,6 @@ const findEmenta = (html, $) => {
   return ementaFound;
 };
 
-// TODO: clean strings & check cases where name value is: 'Emenda' || 'Emenda : 1'
 const getProcedure = html => {
   const table = parseTable(html.first());
   table.shift(); // remove th elements
@@ -180,7 +168,6 @@ const getProcedure = html => {
     return acc;
   }, {});
 
-  // console.log('prodecure:', projecObj);
   return projecObj;
 };
 
